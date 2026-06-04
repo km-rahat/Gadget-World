@@ -2,20 +2,22 @@
   "entities": {
     "User": {
       "title": "User",
-      "description": "Authenticated user profile documents",
+      "description": "Authenticated user profile documents containing RBAC role assignment",
       "type": "object",
       "properties": {
         "uid": { "type": "string" },
         "fullName": { "type": "string" },
+        "name": { "type": "string" },
         "email": { "type": "string" },
         "phoneNumber": { "type": "string" },
+        "role": { "type": "string", "enum": ["admin", "customer"] },
         "createdAt": { "type": "string", "format": "date-time" }
       },
-      "required": ["uid", "fullName", "email"]
+      "required": ["uid", "email", "role"]
     },
     "Order": {
       "title": "Order",
-      "description": "Standard invoice and dispatch document details",
+      "description": "Modern gadgets invoice and processing details",
       "type": "object",
       "properties": {
         "orderId": { "type": "string" },
@@ -28,9 +30,30 @@
         "estimatedDelivery": { "type": "string" },
         "notes": { "type": "string" },
         "orderDate": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"] },
         "createdAt": { "type": "string", "format": "date-time" }
       },
       "required": ["orderId", "customerName", "phone", "email", "address", "paymentMethod", "totalAmount"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Dynamic product catalog items",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "price": { "type": "number" },
+        "category": { "type": "string" },
+        "description": { "type": "string" },
+        "image": { "type": "string" },
+        "rating": { "type": "number" },
+        "isFeatured": { "type": "boolean" },
+        "specifications": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      },
+      "required": ["id", "name", "price", "category", "description", "image"]
     }
   },
   "firestore": {
@@ -41,6 +64,10 @@
     "orders/{orderId}": {
       "schema": "Order",
       "description": "Order records database collection"
+    },
+    "products/{productId}": {
+      "schema": "Product",
+      "description": "E-commerce dynamic products inventory"
     }
   }
 }

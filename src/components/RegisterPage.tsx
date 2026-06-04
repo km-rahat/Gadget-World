@@ -80,11 +80,14 @@ export default function RegisterPage({
 
       // 3. Keep standard metadata record inside Firestore `/users/{userId}` path for lookup/persistence
       try {
+        const assignedRole = email.trim().toLowerCase() === 'rahatboss015@gmail.com' ? 'admin' : 'customer';
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           uid: userCredential.user.uid,
           fullName,
-          email,
+          name: fullName, // both fullName and name fields supported
+          email: email.trim().toLowerCase(),
           phoneNumber,
+          role: assignedRole, // Auto-assign role based on email (Zero role-selection)
           createdAt: new Date().toISOString()
         });
       } catch (err) {

@@ -26,7 +26,7 @@ import {
 import { PRODUCTS, CATEGORIES } from './data';
 import { Product, CartItem, OrderForm, ConfirmedOrder } from './types';
 import { db, auth } from './firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, getDoc, setDoc, doc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 // Component Imports
@@ -42,14 +42,17 @@ import ProductDetailPage from './components/ProductDetailPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import UserAccountPage from './components/UserAccountPage';
+import AdminDashboard from './components/AdminDashboard';
+import CustomerDashboard from './components/CustomerDashboard';
 
 export default function App() {
   // Navigation & Views
-  const [activeView, setView] = useState<'home' | 'product-detail' | 'checkout' | 'order-success' | 'login' | 'register' | 'user-account'>('home');
+  const [activeView, setView] = useState<'home' | 'product-detail' | 'checkout' | 'order-success' | 'login' | 'register' | 'user-account' | 'admin-dashboard' | 'customer-dashboard'>('home');
   const [isLoading, setIsLoading] = useState(true);
 
   // Authenticated user state management
   const [currentUser, setCurrentUser] = useState<any>(null);
+  const [userRole, setUserRole] = useState<'admin' | 'customer' | null>(null);
   const [accountActiveTab, setAccountActiveTab] = useState<'profile' | 'orders'>('profile');
 
   // Light/Dark Theme System state
@@ -61,10 +64,43 @@ export default function App() {
     return 'dark'; // default theme is premium dark
   });
 
-  // Track Auth state changes with persistent listeners
+  // Track Auth state changes with persistent listeners & RBAC verification
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       setCurrentUser(user);
+      if (user) {
+        const isEmailAdmin = user.email?.trim().toLowerCase() === 'rahatboss015@gmail.com';
+        try {
+          const userDocRef = doc(db, 'users', user.uid);
+          const userSnap = await getDoc(userDocRef);
+          
+          if (userSnap.exists()) {
+            const role = userSnap.data().role || 'customer';
+            if (isEmailAdmin && role !== 'admin') {
+              await setDoc(userDocRef, { role: 'admin' }, { merge: true });
+              setUserRole('admin');
+            } else {
+              setUserRole(role);
+            }
+          } else {
+            const autoRole = isEmailAdmin ? 'admin' : 'customer';
+            await setDoc(userDocRef, {
+              uid: user.uid,
+              fullName: user.displayName || 'Authorized Customer',
+              name: user.displayName || 'Authorized Customer',
+              email: user.email?.trim().toLowerCase() || '',
+              role: autoRole,
+              createdAt: new Date().toISOString()
+            });
+            setUserRole(autoRole);
+          }
+        } catch (err) {
+          console.error("RBAC loading error: ", err);
+          setUserRole(isEmailAdmin ? 'admin' : 'customer');
+        }
+      } else {
+        setUserRole(null);
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -89,6 +125,7 @@ export default function App() {
   const handleLogout = async () => {
     try {
       await signOut(auth);
+      setUserRole(null);
       showToast("Signed out successfully.");
       setView('home');
     } catch (err) {
@@ -243,6 +280,8 @@ export default function App() {
     try {
       await addDoc(collection(db, 'orders'), {
         orderId: confirmed.orderId,
+        uid: currentUser ? currentUser.uid : 'anonymous',
+        status: 'Pending',
         customerName: confirmed.customerName,
         phone: confirmed.phone,
         email: confirmed.email,
@@ -375,6 +414,7 @@ export default function App() {
         theme={theme}
         onThemeToggle={toggleTheme}
         currentUser={currentUser}
+        userRole={userRole}
         onSignOut={handleLogout}
         onLoginClick={() => setView('login')}
         onTabChange={(tab) => setAccountActiveTab(tab)}
@@ -607,7 +647,24 @@ export default function App() {
       {activeView === 'login' && (
         <LoginPage
           onRegisterClick={() => setView('register')}
-          onLoginSuccess={() => setView('home')}
+          onLoginSuccess={async (loggedInUser) => {
+            const isEmailAdmin = loggedInUser.email?.trim().toLowerCase() === 'rahatboss015@gmail.com';
+            let role = isEmailAdmin ? 'admin' : 'customer';
+            try {
+              const uSnap = await getDoc(doc(db, 'users', loggedInUser.uid));
+              if (uSnap.exists()) {
+                role = uSnap.data().role || role;
+              }
+            } catch (err) {
+              console.warn("Direct direct login query issue:", err);
+            }
+            
+            if (role === 'admin') {
+              setView('admin-dashboard');
+            } else {
+              setView('customer-dashboard');
+            }
+          }}
           onBackClick={() => setView('home')}
           theme={theme}
           showToast={showToast}
@@ -625,15 +682,26 @@ export default function App() {
         />
       )}
 
-      {/* VIEW PAGE 6: USER ACCOUNT DASHBOARD */}
-      {activeView === 'user-account' && currentUser && (
-        <UserAccountPage
+      {/* VIEW PAGE 6A: ADMIN PORTAL DASHBOARD */}
+      {activeView === 'admin-dashboard' && currentUser && userRole === 'admin' && (
+        <AdminDashboard
           user={currentUser}
           onLogoutClick={handleLogout}
           onBackClick={() => setView('home')}
           theme={theme}
           showToast={showToast}
-          initialTab={accountActiveTab}
+        />
+      )}
+
+      {/* VIEW PAGE 6B: CUSTOMER CUSTOM DASHBOARD */}
+      {activeView === 'customer-dashboard' && currentUser && (
+        <CustomerDashboard
+          user={currentUser}
+          onLogoutClick={handleLogout}
+          onBackClick={() => setView('home')}
+          theme={theme}
+          showToast={showToast}
+          initialTab={accountActiveTab === 'orders' ? 'orders' : 'profile'}
         />
       )}
 

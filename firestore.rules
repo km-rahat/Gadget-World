@@ -16,30 +16,53 @@ service cloud.firestore {
       return isSignedIn() && request.auth.uid == userId;
     }
 
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'rahatboss015@gmail.com' ||
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
     }
 
     // Collection: Users
     match /users/{userId} {
-      allow read: if isSignedIn();
+      allow read: if isSignedIn() && (isOwner(userId) || isAdmin());
+      
       allow create: if isOwner(userId) 
-                    && request.resource.data.keys().hasAll(['uid', 'fullName', 'email'])
-                    && request.resource.data.uid == userId;
-      allow update: if isOwner(userId)
-                    && request.resource.data.uid == userId;
-      allow delete: if false; // Profiles cannot be deleted directly from client SDK
+                    && (
+                      request.resource.data.role == 'customer' || 
+                      (request.resource.data.role == 'admin' && request.auth.token.email == 'rahatboss015@gmail.com')
+                    );
+                    
+      allow update: if isAdmin() || (
+                      isOwner(userId) && 
+                      (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['role']))
+                    );
+      
+      allow delete: if isAdmin();
     }
 
     // Collection: Orders
     match /orders/{orderId} {
-      // Anyone can submit an order (registered or checkout guest)
-      allow create: if request.resource.data.keys().hasAll(['orderId', 'customerName', 'phone', 'email', 'address', 'paymentMethod', 'totalAmount']);
+      // Create is open to authenticated users and guest checkout
+      allow create: if true;
       
-      // But only the owner matching email or the authorized user can view or update their orders
-      allow get: if true; // Support order confirmation search
-      allow list: if isSignedIn() && (resource.data.email == request.auth.token.email);
-      allow update, delete: if false; // Orders cannot be modified/removed directly by standard clients
+      // Get is open for tracking/receipt displays; lists are restricted
+      allow get: if true;
+      allow list: if isAdmin() || (isSignedIn() && resource.data.email == request.auth.token.email);
+      
+      // Update is restricted exclusively to Admin (e.g. for status changes)
+      allow update: if isAdmin();
+      allow delete: if isAdmin();
+    }
+
+    // Collection: Products (Dynamic Inventory Management)
+    match /products/{productId} {
+      // Anyone can browse products
+      allow read: if true;
+      
+      // Only admins can add, update, or remove products
+      allow write: if isAdmin();
     }
   }
 }
