@@ -90,9 +90,7 @@ export default function Header({
           <span className="text-cyan-400">⚡</span>
           <span>&quot;Your satisfaction is our priority | Smart products, better life 🛍️&quot;</span>
         </p>
-        <div className="flex gap-4 text-[11px]">
-          <span className="text-cyan-400">1-Year Full Warranty</span>
-        </div>
+
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
