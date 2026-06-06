@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "979259759911",
+    "project_id": "gadget-world-fa1ec",
+    "storage_bucket": "gadget-world-fa1ec.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:979259759911:android:fec22c570409a99d48dd02",
+        "android_client_info": {
+          "package_name": "com.gadgetworld.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "979259759911-dt6492laf4b2b9ars6h2ihh70u4iq2rr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZ6PsuhMjZPikQiRygzcL3Wur_3dOPJsY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "979259759911-dt6492laf4b2b9ars6h2ihh70u4iq2rr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
