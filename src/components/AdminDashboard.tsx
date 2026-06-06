@@ -347,7 +347,7 @@ export default function AdminDashboard({
 
   return (
     <div className="flex-grow bg-slate-950 text-slate-100 py-10 px-4 sm:px-6 lg:px-8 text-left selection:bg-cyan-500/30 selection:text-white">
-      <div className="max-w-7xl mx-auto space-y-8">
+      <div className="max-w-[1920px] w-full mx-auto space-y-8">
         
         {/* Header Ribbon section */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-slate-900 pb-6">

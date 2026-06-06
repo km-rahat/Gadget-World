@@ -31,6 +31,15 @@ html.light {
   --text-muted: #5e6b7e;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  scroll-behavior: smooth;
+}
+
 /* Smooth elegant CSS transitions for theme swap */
 * {
   transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;

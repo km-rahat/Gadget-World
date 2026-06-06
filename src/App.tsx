@@ -463,7 +463,7 @@ export default function App() {
           <Hero onShopNowClick={() => handleScrollToSection('all-products-section')} />
 
           {/* Core Applet Content Body */}
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+          <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 py-12 space-y-16">
             
             {/* Category Filter Pills (Scroll target also) */}
             <CategoryFilter
@@ -754,7 +754,7 @@ export default function App() {
 
       {/* STICKY FOOTER ACCENT FOOTNOTES */}
       <footer className="w-full bg-slate-950 border-t border-slate-900/80 py-12 text-slate-450 font-sans">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-10">
+        <div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-16 space-y-10">
           
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Branding desk */}

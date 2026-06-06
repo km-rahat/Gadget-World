@@ -104,7 +104,7 @@ export default function CheckoutForm({
         <div className="absolute bottom-20 right-10 w-[450px] h-[450px] rounded-full bg-slate-800/10 blur-[130px]" />
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10 space-y-8">
+      <div className="max-w-[1920px] w-full mx-auto relative z-10 space-y-8">
         
         {/* Back control banner */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

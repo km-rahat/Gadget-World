@@ -30,7 +30,7 @@ export default function CartPage({
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 rounded-full bg-slate-800/10 blur-[130px]" />
       </div>
 
-      <div className="max-w-4xl mx-auto relative z-10 space-y-6">
+      <div className="max-w-[1920px] w-full mx-auto relative z-10 space-y-6">
         
         {/* Navigation Action Area */}
         <div className="flex items-center justify-between">

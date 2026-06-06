@@ -173,7 +173,7 @@ export default function CustomerDashboard({
 
   return (
     <div className="flex-grow bg-main-bg text-text-main transition-colors duration-300 py-10 px-4 sm:px-6 lg:px-8 text-left">
-      <div className="max-w-5xl mx-auto space-y-8">
+      <div className="max-w-[1920px] w-full mx-auto space-y-8">
         
         {/* Navigation Ribbon */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border-subtle pb-6">
