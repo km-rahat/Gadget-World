@@ -22,6 +22,7 @@ export default function RegisterPage({
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
+  const [role, setRole] = useState<'admin' | 'customer'>('customer');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
@@ -80,14 +81,16 @@ export default function RegisterPage({
 
       // 3. Keep standard metadata record inside Firestore `/users/{userId}` path for lookup/persistence
       try {
-        const assignedRole = email.trim().toLowerCase() === 'rahatboss015@gmail.com' ? 'admin' : 'customer';
+        const isEmailAdmin = email.trim().toLowerCase() === 'rahatboss015@gmail.com';
+        const assignedRole = isEmailAdmin ? 'admin' : role;
         await setDoc(doc(db, 'users', userCredential.user.uid), {
           uid: userCredential.user.uid,
           fullName,
           name: fullName, // both fullName and name fields supported
           email: email.trim().toLowerCase(),
           phoneNumber,
-          role: assignedRole, // Auto-assign role based on email (Zero role-selection)
+          phone: phoneNumber,
+          role: assignedRole,
           createdAt: new Date().toISOString()
         });
       } catch (err) {
@@ -211,6 +214,29 @@ export default function RegisterPage({
                 className="w-full bg-slate-905 border border-border-subtle text-xs rounded-xl p-3.5 pl-11 text-text-main placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500 disabled:opacity-50 transition"
               />
               <Phone className="absolute left-4 top-3.5 w-4.5 h-4.5 text-slate-500" />
+            </div>
+          </div>
+
+          {/* User Role input */}
+          <div className="space-y-1 text-left">
+            <label className="block text-xs font-semibold uppercase tracking-widest text-text-muted">
+              Select User Role
+            </label>
+            <div className="relative">
+              <select
+                disabled={isLoading}
+                value={role}
+                onChange={(e) => setRole(e.target.value as 'admin' | 'customer')}
+                className="w-full bg-slate-905 border border-border-subtle text-xs rounded-xl p-3.5 pl-4 text-text-main focus:outline-none focus:ring-1 focus:ring-cyan-500 disabled:opacity-50 transition cursor-pointer appearance-none font-medium"
+              >
+                <option value="customer" className="bg-slate-900 text-white">Customer (Default)</option>
+                <option value="admin" className="bg-slate-900 text-white">Admin</option>
+              </select>
+              <div className="pointer-events-none absolute inset-y-0 right-4 flex items-center text-slate-500">
+                <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                </svg>
+              </div>
             </div>
           </div>
 

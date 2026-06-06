@@ -53,6 +53,7 @@ export default function App() {
   // Authenticated user state management
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [userRole, setUserRole] = useState<'admin' | 'customer' | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [accountActiveTab, setAccountActiveTab] = useState<'profile' | 'orders'>('profile');
 
   // Light/Dark Theme System state
@@ -67,6 +68,7 @@ export default function App() {
   // Track Auth state changes with persistent listeners & RBAC verification
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      setIsAuthLoading(true);
       setCurrentUser(user);
       if (user) {
         const isEmailAdmin = user.email?.trim().toLowerCase() === 'rahatboss015@gmail.com';
@@ -101,9 +103,41 @@ export default function App() {
       } else {
         setUserRole(null);
       }
+      setIsAuthLoading(false);
     });
     return () => unsubscribe();
   }, []);
+
+  // Route Protection & Dynamic Redirects logic
+  useEffect(() => {
+    if (isAuthLoading) return;
+
+    if (activeView === 'admin-dashboard') {
+      if (!currentUser) {
+        setView('login');
+        showToast("Please login as Admin to access the admin panel.");
+      } else if (userRole === 'customer') {
+        setView('customer-dashboard');
+        showToast("Access Denied: Redirecting to Customer Dashboard.");
+      }
+    } else if (activeView === 'customer-dashboard') {
+      if (!currentUser) {
+        setView('login');
+        showToast("Please sign in to access your dashboard.");
+      } else if (userRole === 'admin') {
+        setView('admin-dashboard');
+        showToast("Access Redirect: Admins belong in the Admin Portal.");
+      }
+    } else if (activeView === 'login' || activeView === 'register') {
+      if (currentUser && userRole) {
+        if (userRole === 'admin') {
+          setView('admin-dashboard');
+        } else {
+          setView('customer-dashboard');
+        }
+      }
+    }
+  }, [activeView, currentUser, userRole, isAuthLoading]);
 
   // Theme change effect
   useEffect(() => {
