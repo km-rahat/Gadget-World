@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 
 import { PRODUCTS, CATEGORIES } from './data';
-import { Product, CartItem, OrderForm, ConfirmedOrder } from './types';
+import { Product, CartItem, OrderForm, ConfirmedOrder, formatBDT } from './types';
 import { db, auth } from './firebase';
 import { collection, addDoc, getDoc, setDoc, doc } from 'firebase/firestore';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
@@ -39,6 +39,7 @@ import CartSidebar from './components/CartSidebar';
 import CheckoutForm from './components/CheckoutForm';
 import OrderSuccess from './components/OrderSuccess';
 import ProductDetailPage from './components/ProductDetailPage';
+import CartPage from './components/CartPage';
 import LoginPage from './components/LoginPage';
 import RegisterPage from './components/RegisterPage';
 import UserAccountPage from './components/UserAccountPage';
@@ -47,7 +48,7 @@ import CustomerDashboard from './components/CustomerDashboard';
 
 export default function App() {
   // Navigation & Views
-  const [activeView, setView] = useState<'home' | 'product-detail' | 'checkout' | 'order-success' | 'login' | 'register' | 'user-account' | 'admin-dashboard' | 'customer-dashboard'>('home');
+  const [activeView, setView] = useState<'home' | 'product-detail' | 'checkout' | 'order-success' | 'login' | 'register' | 'user-account' | 'admin-dashboard' | 'customer-dashboard' | 'cart'>('home');
   const [isLoading, setIsLoading] = useState(true);
 
   // Authenticated user state management
@@ -441,7 +442,7 @@ export default function App() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         cartCount={cartTotalCount}
-        onCartClick={() => setIsCartOpen(true)}
+        onCartClick={() => setView('cart')}
         activeView={activeView}
         setView={setView}
         onScrollToSection={handleScrollToSection}
@@ -533,12 +534,12 @@ export default function App() {
                       </div>
 
                       <div className="pt-4 mt-4 border-t border-slate-900 flex justify-between items-center bg-transparent">
-                        <span className="font-extrabold text-base text-cyan-400">${prod.price.toLocaleString()}</span>
+                        <span className="font-extrabold text-base text-cyan-400">{formatBDT(prod.price)}</span>
                         <button
-                          onClick={() => handleBuyNowDirect(prod)}
+                          onClick={() => handleAddToCart(prod)}
                           className="inline-flex items-center justify-center px-4 py-2 bg-cyan-650 hover:bg-cyan-550 border border-cyan-500/30 hover:border-cyan-400 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:scale-[1.05] active:scale-95 cursor-pointer shadow-lg shadow-cyan-950/25"
                         >
-                          BUY NOW
+                          ADD TO CART
                         </button>
                       </div>
                     </div>
@@ -655,6 +656,18 @@ export default function App() {
             setDirectProduct(null);
           }}
           onConfirmOrder={handleConfirmOrder}
+        />
+      )}
+
+      {/* VIEW PAGE 1C: DEDICATED CART PAGE */}
+      {activeView === 'cart' && (
+        <CartPage
+          cartItems={cartItems}
+          onUpdateQuantity={handleUpdateCartQuantity}
+          onRemoveItem={handleRemoveCartItem}
+          onCheckoutClick={handleCartProceedCheckout}
+          onBackToShopping={handleBackToShopping}
+          theme={theme}
         />
       )}
 

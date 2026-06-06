@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Trash2, Plus, Minus, ArrowRight, ShoppingCart } from 'lucide-react';
-import { CartItem } from '../types';
+import { CartItem, formatBDT } from '../types';
 
 interface CartSidebarProps {
   isOpen: boolean;
@@ -119,7 +119,7 @@ export default function CartSidebar({
                         {/* Cost */}
                         <div className="text-right">
                           <span className="text-xs font-bold text-[#f1f5f9]">
-                            ${(item.product.price * item.quantity).toLocaleString()}
+                            {formatBDT(item.product.price * item.quantity)}
                           </span>
                         </div>
                       </div>
@@ -149,7 +149,7 @@ export default function CartSidebar({
                   <div className="flex justify-between items-center text-sm font-bold pt-1">
                     <span className="text-slate-300">Total payable</span>
                     <span className="text-xl text-[#f1f5f9] font-extrabold font-mono">
-                      ${total.toLocaleString()}
+                      {formatBDT(total)}
                     </span>
                   </div>
                 </div>

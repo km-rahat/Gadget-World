@@ -20,6 +20,7 @@ import {
 } from 'lucide-react';
 import { collection, query, where, getDocs, doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { formatBDT } from '../types';
 
 interface CustomerDashboardProps {
   user: any;
@@ -433,7 +434,7 @@ export default function CustomerDashboard({
 
                         <div className="text-left sm:text-right">
                           <span className="text-[9px] text-text-muted block font-semibold uppercase tracking-wider">Estimated Total</span>
-                          <span className="text-base font-extrabold text-cyan-400">${(ord.totalAmount || 0).toLocaleString()}</span>
+                          <span className="text-base font-extrabold text-cyan-400">{formatBDT(ord.totalAmount || 0)}</span>
                         </div>
                       </div>
 
@@ -446,7 +447,7 @@ export default function CustomerDashboard({
                               <span className="font-bold text-slate-200">{item.productName}</span>
                               <div className="flex items-center gap-6 text-text-muted">
                                 <span>Quantity: <strong className="text-white">{item.quantity}</strong></span>
-                                <span className="font-bold text-white">${((item.productPrice || 0) * (item.quantity || 1)).toLocaleString()}</span>
+                                <span className="font-bold text-white">{formatBDT((item.productPrice || 0) * (item.quantity || 1))}</span>
                               </div>
                             </div>
                           ))}
@@ -525,7 +526,7 @@ export default function CustomerDashboard({
                             </span>
                           </div>
                           <p className="text-[10px] text-text-muted leading-tight font-light truncate">{ord.address}</p>
-                          <p className="text-[10px] text-cyan-400 font-bold mt-1.5 font-mono">${(ord.totalAmount || 0).toLocaleString()}</p>
+                          <p className="text-[10px] text-cyan-400 font-bold mt-1.5 font-mono">{formatBDT(ord.totalAmount || 0)}</p>
                         </button>
                       );
                     })}
@@ -547,7 +548,7 @@ export default function CustomerDashboard({
                         </div>
                         <div className="text-left sm:text-right">
                           <span className="text-[9px] text-text-muted block font-bold uppercase tracking-wider">Price Charged</span>
-                          <span className="text-lg font-extrabold text-cyan-400 font-mono">${(selectedTrackingOrder.totalAmount || 0).toLocaleString()}</span>
+                          <span className="text-lg font-extrabold text-cyan-400 font-mono">{formatBDT(selectedTrackingOrder.totalAmount || 0)}</span>
                         </div>
                       </div>
 

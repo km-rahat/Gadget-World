@@ -1,6 +1,6 @@
 import React from 'react';
 import { CheckCircle2, ShoppingBag, ArrowRight, Home, Calendar, Truck, ShieldCheck, Mail, Phone, MapPin } from 'lucide-react';
-import { ConfirmedOrder } from '../types';
+import { ConfirmedOrder, formatBDT } from '../types';
 
 interface OrderSuccessProps {
   order: ConfirmedOrder | null;
@@ -28,10 +28,10 @@ export default function OrderSuccess({ order, onBackToShopping }: OrderSuccessPr
         {/* Core Success Heading */}
         <div className="space-y-2">
           <h1 className="text-xl sm:text-2xl font-serif tracking-tight text-white">
-            🎉 Your order has been successfully confirmed
+            🎉 Your order has been successfully confirmed!
           </h1>
           <p className="text-slate-400 text-xs sm:text-sm font-sans font-light">
-            Thank you for shopping with <strong className="text-cyan-400 font-bold">Gadget World</strong>. We appreciate your trust!
+            Thank you for shopping with Gadget World.
           </p>
         </div>
 
@@ -62,7 +62,7 @@ export default function OrderSuccess({ order, onBackToShopping }: OrderSuccessPr
                   <div className="text-right whitespace-nowrap">
                     <span className="text-slate-500 text-xs">Qty: {item.quantity}</span>
                     <span className="text-slate-300 font-mono font-bold ml-3">
-                      ${(item.productPrice * item.quantity).toLocaleString()}
+                      {formatBDT(item.productPrice * item.quantity)}
                     </span>
                   </div>
                 </div>
@@ -118,7 +118,7 @@ export default function OrderSuccess({ order, onBackToShopping }: OrderSuccessPr
           <div className="bg-[#020617]/80 border border-slate-800 p-4 rounded flex justify-between items-center text-xs uppercase tracking-wider font-semibold">
             <span className="text-slate-400">Total Payable Amount:</span>
             <span className="text-lg font-extrabold text-[#f1f5f9] font-mono">
-              ${order.totalAmount.toLocaleString()}
+              {formatBDT(order.totalAmount)}
             </span>
           </div>
 
@@ -131,7 +131,7 @@ export default function OrderSuccess({ order, onBackToShopping }: OrderSuccessPr
             <span>Need modification or cancel?</span>
           </p>
           <p>
-            Please email <span className="text-cyan-400 underline font-normal">support@gadgetworld.com</span> or dial our 24/7 hotline at <strong className="text-slate-305 font-mono">+1 (800) 555-GDGT</strong> inside 2 hours of checkout submission.
+            Please email <span className="text-cyan-400 underline font-normal">support@gadgetworld.com</span> or dial our 24/7 hotline at <strong className="text-slate-305 font-mono">+880 1711-234567</strong> inside 2 hours of checkout submission.
           </p>
         </div>
 

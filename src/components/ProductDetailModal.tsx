@@ -1,6 +1,6 @@
 import React from 'react';
 import { X, Star, Shield, ArrowRight, Truck, RefreshCw } from 'lucide-react';
-import { Product } from '../types';
+import { Product, formatBDT } from '../types';
 
 interface ProductDetailModalProps {
   product: Product | null;
@@ -89,7 +89,7 @@ export default function ProductDetailModal({
                   <div>
                     <p className="text-[9px] text-slate-500 uppercase tracking-widest leading-none mb-1">Special Price</p>
                     <span className="text-2xl font-sans tracking-tight font-extrabold text-[#f1f5f9]">
-                      ${product.price.toLocaleString()}
+                      {formatBDT(product.price)}
                     </span>
                   </div>
                   <span className="text-[10px] text-cyan-400 font-semibold bg-cyan-950/40 border border-cyan-800/50 px-2 py-0.5 rounded uppercase tracking-wider">

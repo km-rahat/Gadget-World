@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ShoppingBag, ArrowLeft, ShieldCheck, Mail, Phone, User, MapPin, Notebook, CreditCard, ChevronRight } from 'lucide-react';
-import { OrderForm, CartItem, Product } from '../types';
+import { OrderForm, CartItem, Product, formatBDT } from '../types';
 
 interface CheckoutFormProps {
   directProduct: Product | null;
@@ -322,7 +322,7 @@ export default function CheckoutForm({
                     <div className="text-left flex-1 min-w-0">
                       <h4 className="text-xs font-bold text-white truncate">{directProduct.name}</h4>
                       <p className="text-[9px] text-cyan-400 uppercase tracking-widest leading-none mt-1">{directProduct.category}</p>
-                      <p className="text-xs font-mono text-slate-400 mt-2">${directProduct.price} each</p>
+                      <p className="text-xs font-mono text-slate-400 mt-2">{formatBDT(directProduct.price)} each</p>
                     </div>
                   </div>
 
@@ -366,7 +366,7 @@ export default function CheckoutForm({
                         <p className="text-[10px] text-slate-400">Qty: {item.quantity}</p>
                       </div>
                       <span className="text-xs font-semibold text-slate-350 font-mono">
-                        ${(item.product.price * item.quantity).toLocaleString()}
+                        {formatBDT(item.product.price * item.quantity)}
                       </span>
                     </div>
                   ))}
@@ -375,12 +375,12 @@ export default function CheckoutForm({
 
               {/* pricing aggregate breakdown */}
               <div className="pt-4 border-t border-slate-850 space-y-2 text-xs text-left">
-                <div className="flex justify-between text-slate-450">
+                <div className="flex justify-between text-slate-455">
                   <span>Product Subtotal:</span>
-                  <span className="font-mono text-slate-300">${(isDirectCheckout ? singleUnitPrice : defaultProductPrice).toLocaleString()}</span>
+                  <span className="font-mono text-slate-300">{formatBDT(isDirectCheckout ? singleUnitPrice : defaultProductPrice)}</span>
                 </div>
                 {isDirectCheckout && (
-                  <div className="flex justify-between text-slate-455">
+                  <div className="flex justify-between text-[#f1f5f9]">
                     <span>Selected Qty Multiplier:</span>
                     <span className="font-mono text-slate-300">x{quantity}</span>
                   </div>
@@ -393,7 +393,7 @@ export default function CheckoutForm({
                 <div className="flex justify-between items-center text-sm font-extrabold text-[#f1f5f9] border-t border-slate-850 pt-3">
                   <span>Grand Total:</span>
                   <span className="text-lg text-cyan-400 font-mono">
-                    ${totalAmount.toLocaleString()}
+                    {formatBDT(totalAmount)}
                   </span>
                 </div>
               </div>

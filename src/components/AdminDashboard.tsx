@@ -31,7 +31,7 @@ import {
 } from 'lucide-react';
 import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, query, orderBy, where, addDoc } from 'firebase/firestore';
 import { db } from '../firebase';
-import { Product, ConfirmedOrder } from '../types';
+import { Product, ConfirmedOrder, formatBDT } from '../types';
 
 interface AdminDashboardProps {
   user: any;
@@ -91,7 +91,7 @@ export default function AdminDashboard({
     storeName: 'Gadget World Flagship Store',
     storeStatus: 'Open',
     announcement: 'Exclusive 15% discount on all Titanium Smartphones is live!',
-    freeShippingThreshold: 150,
+    freeShippingThreshold: 18300,
   });
 
   // Error logging helper matching firebase-integration skill
@@ -461,7 +461,7 @@ export default function AdminDashboard({
                 <div className="space-y-1">
                   <span className="text-slate-400 text-[10px] font-bold uppercase tracking-wider block">Estimated Gross Revenue</span>
                   <span className="text-2xl font-extrabold text-cyan-400 block font-mono">
-                    ${totalSalesRevenue.toLocaleString()}
+                    {formatBDT(totalSalesRevenue)}
                   </span>
                   <span className="text-[10px] text-emerald-400 bg-emerald-950/30 border border-emerald-900/10 px-1.5 py-0.5 rounded">Excluding Cancellations</span>
                 </div>
@@ -609,7 +609,7 @@ export default function AdminDashboard({
                             <td className="py-3 px-4 text-slate-400">{ord.orderDate || 'Today'}</td>
                             <td className="py-3 px-4 font-mono text-[10px]">{ord.paymentMethod}</td>
                             <td className="py-3 px-4 font-semibold text-center">{Array.isArray(ord.items) ? ord.items.reduce((acc: number, item: any) => acc + (item.quantity || 1), 0) : 1}</td>
-                            <td className="py-3 px-4 text-cyan-400 font-bold">${(ord.totalAmount || 0).toLocaleString()}</td>
+                            <td className="py-3 px-4 text-cyan-400 font-bold">{formatBDT(ord.totalAmount || 0)}</td>
                             <td className="py-3 px-4">
                               <span className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold ${statusColor}`}>
                                 {ord.status || 'Pending'}
@@ -718,8 +718,8 @@ export default function AdminDashboard({
 
                       {/* Display pricing */}
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-slate-450 font-mono">ID: {prod.id}</span>
-                        <span className="text-base font-extrabold text-cyan-400">${prod.price.toLocaleString()}</span>
+                        <span className="text-xs text-slate-455 font-mono">ID: {prod.id}</span>
+                        <span className="text-base font-extrabold text-cyan-400">{formatBDT(prod.price)}</span>
                       </div>
                     </div>
 
@@ -842,7 +842,7 @@ export default function AdminDashboard({
                       <div className="flex flex-wrap items-center gap-4">
                         <div className="text-left md:text-right">
                           <span className="text-[9px] text-slate-400 block font-bold uppercase tracking-wider">Order Value</span>
-                          <span className="text-base font-extrabold text-cyan-400">${(ord.totalAmount || 0).toLocaleString()}</span>
+                          <span className="text-base font-extrabold text-cyan-400">{formatBDT(ord.totalAmount || 0)}</span>
                         </div>
 
                         {/* Status updating Selector */}
@@ -872,7 +872,7 @@ export default function AdminDashboard({
                             <span className="font-bold text-slate-350">{item.productName}</span>
                             <div className="flex items-center gap-6 text-slate-450">
                               <span>Quantity: <strong className="text-slate-100">{item.quantity}</strong></span>
-                              <span className="font-bold text-cyan-400">${((item.productPrice || 0) * (item.quantity ?? 1)).toLocaleString()}</span>
+                              <span className="font-bold text-cyan-400">{formatBDT((item.productPrice || 0) * (item.quantity ?? 1))}</span>
                             </div>
                           </div>
                         ))}
@@ -1025,7 +1025,7 @@ export default function AdminDashboard({
                 </div>
 
                 <div className="space-y-1.5">
-                  <label className="text-slate-400 font-bold block">Free Shipping Limit USD ($)</label>
+                  <label className="text-slate-400 font-bold block">Free Shipping Limit (BDT)</label>
                   <input 
                     type="number" 
                     value={storeSettings.freeShippingThreshold}
@@ -1131,7 +1131,7 @@ export default function AdminDashboard({
                             <span className="text-[11px] text-slate-350 leading-snug">
                               {Array.isArray(ord.items) ? ord.items.map((i: any) => `${i.productName} (x${i.quantity})`).join(', ') : 'Accessories'}
                             </span>
-                            <span className="font-bold text-cyan-400 text-xs shrink-0">${(ord.totalAmount || 0).toLocaleString()}</span>
+                            <span className="font-bold text-cyan-400 text-xs shrink-0">{formatBDT(ord.totalAmount || 0)}</span>
                           </div>
 
                           <div className="flex items-center justify-between text-[11px] text-slate-400">
@@ -1216,7 +1216,7 @@ export default function AdminDashboard({
 
                   {/* Price */}
                   <div className="space-y-1">
-                    <label className="text-slate-400 font-bold block">Price in USD ($)*</label>
+                    <label className="text-slate-400 font-bold block">Price (BDT)*</label>
                     <input
                       type="number"
                       required

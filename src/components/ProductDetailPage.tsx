@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowLeft, Star, Shield, Truck, RefreshCw, ShoppingBag, User, Phone, Mail, MapPin, CreditCard, Notebook } from 'lucide-react';
-import { Product, OrderForm } from '../types';
+import { Product, OrderForm, formatBDT } from '../types';
 
 interface ProductDetailPageProps {
   product: Product;
@@ -199,8 +199,8 @@ export default function ProductDetailPage({
               <div className="py-3 px-5 bg-gradient-to-r from-slate-900 to-slate-950 border border-slate-850 rounded">
                 <p className="text-[9px] text-slate-500 uppercase tracking-widest leading-none mb-1">Guaranteed Deal Price</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-3xl font-bold font-mono text-[#f1f5f9]">${product.price.toLocaleString()}</span>
-                  <span className="text-slate-500 text-xs line-through">${(product.price * 1.15).toFixed(0)}</span>
+                  <span className="text-3xl font-bold font-mono text-[#f1f5f9]">{formatBDT(product.price)}</span>
+                  <span className="text-slate-500 text-xs line-through">{formatBDT(Math.round(product.price * 1.15))}</span>
                 </div>
               </div>
 
@@ -495,7 +495,7 @@ export default function ProductDetailPage({
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Product Price (Filled):</span>
-                      <span className="font-mono text-slate-200">${product.price.toLocaleString()} each</span>
+                      <span className="font-mono text-slate-200">{formatBDT(product.price)} each</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-slate-500">Selected Quantity:</span>
@@ -503,7 +503,7 @@ export default function ProductDetailPage({
                     </div>
                     <div className="flex justify-between border-t border-slate-900 pt-3 text-sm font-bold">
                       <span className="text-slate-400">Total Price:</span>
-                      <span className="text-cyan-400 font-mono text-lg">${(product.price * quantity).toLocaleString()}</span>
+                      <span className="text-cyan-400 font-mono text-lg">{formatBDT(product.price * quantity)}</span>
                     </div>
                   </div>
                 </div>

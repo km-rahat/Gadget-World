@@ -1,6 +1,6 @@
 import React from 'react';
 import { Star, ShoppingBag } from 'lucide-react';
-import { Product } from '../types';
+import { Product, formatBDT } from '../types';
 
 interface ProductCardProps {
   key?: string;
@@ -12,7 +12,8 @@ interface ProductCardProps {
 
 export default function ProductCard({
   product,
-  onBuyNowClick
+  onBuyNowClick,
+  onAddToCartClick
 }: ProductCardProps) {
   return (
     <div 
@@ -53,6 +54,10 @@ export default function ProductCard({
       {/* Content description area */}
       <div className="flex-grow p-4 sm:p-5 flex flex-col justify-between space-y-4">
         <div className="space-y-1.5 text-left">
+          {/* Product Category Label */}
+          <span className="text-[10px] text-cyan-400 uppercase tracking-widest font-semibold block">
+            {product.category}
+          </span>
           {/* Product Name */}
           <h3 
             onClick={() => onBuyNowClick(product)}
@@ -73,18 +78,21 @@ export default function ProductCard({
           {/* Pricing tags */}
           <div className="flex flex-col text-left">
             <span className="text-lg sm:text-xl font-sans tracking-tight font-extrabold text-[#f1f5f9]">
-              ${product.price.toLocaleString()}
+              {formatBDT(product.price)}
             </span>
             <span className="text-[9px] text-slate-500 uppercase tracking-widest leading-none mt-1">VAT included</span>
           </div>
 
-          {/* BUY NOW premium text button */}
+          {/* ADD TO CART premium text button */}
           <button
-            onClick={() => onBuyNowClick(product)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onAddToCartClick(product);
+            }}
             className="inline-flex items-center justify-center px-4 py-2 bg-cyan-650 hover:bg-cyan-550 border border-cyan-500/30 hover:border-cyan-400 text-white text-xs font-bold uppercase tracking-wider rounded-lg transition-all duration-300 hover:scale-[1.05] active:scale-95 cursor-pointer shadow-lg shadow-cyan-950/25"
-            id={`buy-now-btn-${product.id}`}
+            id={`add-to-cart-btn-${product.id}`}
           >
-            BUY NOW
+            ADD TO CART
           </button>
 
         </div>

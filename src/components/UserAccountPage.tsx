@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { User, ShoppingBag, LogOut, Clock, Mail, Phone, Calendar, ArrowLeft, Loader2, Star, ShieldCheck, MapPin } from 'lucide-react';
 import { collection, query, where, getDocs, orderBy, doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../firebase';
+import { formatBDT } from '../types';
 
 interface UserAccountPageProps {
   user: any;
@@ -262,7 +263,7 @@ export default function UserAccountPage({
                       <div className="text-left sm:text-right">
                         <span className="text-[10px] text-text-muted block font-semibold uppercase tracking-wider">Total Amount Paid</span>
                         <span className="text-base sm:text-lg font-extrabold text-cyan-400">
-                          ${(order.totalAmount || 0).toLocaleString()}
+                          {formatBDT(order.totalAmount || 0)}
                         </span>
                       </div>
                     </div>
@@ -276,7 +277,7 @@ export default function UserAccountPage({
                             <span className="font-bold text-slate-200">{item.productName}</span>
                             <div className="flex items-center gap-4 text-text-muted shrink-0 text-right">
                               <span>Qty: <strong className="text-white">{item.quantity}</strong></span>
-                              <span className="font-semibold text-white">${((item.productPrice || 0) * (item.quantity || 1)).toLocaleString()}</span>
+                              <span className="font-semibold text-white">{formatBDT((item.productPrice || 0) * (item.quantity || 1))}</span>
                             </div>
                           </div>
                         ))}
